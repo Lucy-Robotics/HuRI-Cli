@@ -85,7 +85,11 @@ def build_client(config: ClientConfig, cli: Mapping) -> HuRIClient:
 
 async def run(config: ClientConfig, cli: Optional[Mapping] = None) -> int:
     cli = cli or {}
-    client = build_client(config, cli)
+    try:
+        client = build_client(config, cli)
+    except ValueError as e:
+        logger.error("%s", e)
+        return 1
     try:
         await client.connect()
     except HuRISessionError as e:
